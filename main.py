@@ -7,7 +7,7 @@ import mpl_toolkits.mplot3d.axes3d as p3
 
 World_Size = 100
 N_Particles = 10
-Steps = 1000
+Steps = 100
 #Classes
 
 class Particle():
@@ -16,7 +16,7 @@ class Particle():
         self.x = x
         self.v = v
         self.mass = mass
-        self.size = 1
+        self.size = 1 #radius
 
 
 #Data
@@ -48,6 +48,9 @@ def animate(State):
 
 def move(particle):
     next_x = particle.x + particle.v
+    for particle2 in Particles:
+        if np.sqrt(np.dot(next_x-particle2.x,next_x-particle2.x))<(particle.size+particle2.size) and particle!=particle2:
+            pass
     if (next_x)[0] < 0:
         particle.v[0] = -particle.v[0]
     if (next_x)[1] < 0:
@@ -73,6 +76,7 @@ for i in range(Steps):
         move(particle)
     save_state()
 
+plt.style.use('dark_background')
 fig = plt.figure()
 ax = p3.Axes3D(fig)
 ax.set_xlim3d([0, World_Size])
@@ -84,10 +88,10 @@ ax.set_ylabel('Y')
 ax.set_zlim3d([0, World_Size])
 ax.set_zlabel('Z')
 ax.axis([0,World_Size,0,World_Size])
-map = ax.scatter(Simulation_Data[0][0], Simulation_Data[0][1], Simulation_Data[0][2])
+map = ax.scatter(Simulation_Data[0][0], Simulation_Data[0][1], Simulation_Data[0][2],color=(1,0,0,1))
 ax.set_xlabel('X')
 ax.set_ylabel('Y')
 ax.set_zlabel('Z')
 ani = animation.FuncAnimation(fig, animate, frames=Simulation_Data, interval=30, repeat=True)
-
+ani.save('out.gif')
 plt.show()
